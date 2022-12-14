@@ -10,7 +10,7 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-const httpServer = https.createServer(app)
+const httpServer = http.createServer(app)
 const io = new socketio.Server(httpServer, {
   cors: {
     origin: "https://turbo-partners-teste.lojaintegrada.com.br/",
@@ -18,7 +18,7 @@ const io = new socketio.Server(httpServer, {
   }
 })
 
-let oneTimeout
+let oneTimeout;
 
 io.on('connection', (socket) => {
   console.log(`New connection: ${socket.id}`)
@@ -65,4 +65,4 @@ io.on('connection', (socket) => {
   socket.emit('connected', 'connected')
 })
 
-httpServer.listen(3000, () => console.log('Server-test is running!'))
+httpServer.listen(8080, () => console.log('Server-test is running!'))
