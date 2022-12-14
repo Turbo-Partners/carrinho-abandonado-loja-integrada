@@ -3,13 +3,14 @@ import axios from 'axios'
 import express from 'express'
 import socketio from 'socket.io'
 import http from 'http'
+import https from 'https'
 import cors from 'cors'
 
 const app = express()
 app.use(express.json())
 app.use(cors())
 
-const httpServer = http.createServer(app)
+const httpServer = https.createServer(app)
 const io = new socketio.Server(httpServer, {
   cors: {
     origin: "https://turbo-partners-teste.lojaintegrada.com.br/",
