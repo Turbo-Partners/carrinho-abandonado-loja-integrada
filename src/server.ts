@@ -3,7 +3,6 @@ import axios from 'axios'
 import express from 'express'
 import socketio from 'socket.io'
 import http from 'http'
-import https from 'https'
 import cors from 'cors'
 
 const app = express()
