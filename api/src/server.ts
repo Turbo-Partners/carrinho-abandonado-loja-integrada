@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
     socket.on('setTimeOut', () => {
       clearTimeout(oneTimeout)
 
-      oneTimeout = setTimeout(sendCartInfo, 10000)
+      oneTimeout = setTimeout(sendCartInfo, 20000)
       console.log('Envio adiado')
 
       socket.emit('infoSent', 'Envio adiado')
