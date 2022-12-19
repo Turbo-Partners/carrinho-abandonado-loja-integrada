@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
       });
     };
 
-    oneTimeout = setTimeout(sendCartInfo, 10000)
+    oneTimeout = setTimeout(sendCartInfo, 20000)
     console.log('Envio timer iniciado')
 
     socket.on('setTimeOut', () => {
