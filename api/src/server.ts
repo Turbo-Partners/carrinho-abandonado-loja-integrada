@@ -13,7 +13,7 @@ app.use(cors())
 const httpServer = http.createServer(app)
 const io = new socketio.Server(httpServer, {
   cors: {
-    origin: "https://turbo-partners-teste.lojaintegrada.com.br/",
+    origin: "https://www.lojadabruna.com/",
     methods: ['GET', 'POST']
   }
 })
