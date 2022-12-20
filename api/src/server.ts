@@ -19,6 +19,7 @@ const io = new socketio.Server(httpServer, {
 })
 
 let sendCartTimeout;
+let checkoutCompleted = false;
 
 io.on('connection', (socket) => {
   console.log(`New connection: ${socket.id}`)
@@ -45,7 +46,11 @@ io.on('connection', (socket) => {
       });
     };
 
-    sendCartTimeout = setTimeout(sendCartInfo, 20000);
+    sendCartTimeout = setTimeout(() => {
+      if(checkoutCompleted === false) {
+        sendCartInfo()
+      }
+    }, 20000);
     console.log('Timer de envio iniciado');
 
     // socket.on('setTimeOut', () => {
@@ -58,7 +63,10 @@ io.on('connection', (socket) => {
     // })
 
     socket.on('checkoutComplete', () => {
-      clearTimeout(sendCartTimeout);
+      // clearTimeout(sendCartTimeout);
+      console.log(checkoutCompleted)
+      checkoutCompleted = true;
+      console.log(checkoutCompleted)
       console.log('Compra feita');
     })
 
