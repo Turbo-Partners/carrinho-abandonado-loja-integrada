@@ -49,7 +49,6 @@ io.on('connection', (socket) => {
 
     sendCartTimeout = setTimeout(sendCartInfo, 20000);
     console.log('Timer de envio iniciado');
-    console.log()
 
     // socket.on('setTimeOut', () => {
     //   clearTimeout(oneTimeout)
