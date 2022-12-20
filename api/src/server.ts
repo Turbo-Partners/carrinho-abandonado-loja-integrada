@@ -69,6 +69,7 @@ io.on('connection', (socket) => {
 
   socket.on('checkoutComplete', () => {
     setTimeout(() => {
+      console.log(socket.connected)
       if(socket.connected === false) {
         console.log('Compra feita');
         clearTimeout(sendCartTimeout);
