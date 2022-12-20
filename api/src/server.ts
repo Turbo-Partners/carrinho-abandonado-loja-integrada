@@ -68,14 +68,15 @@ io.on('connection', (socket) => {
   })
 
   socket.on('checkoutComplete', () => {
-    console.log(socket.connected);
-    // setTimeout(() => {
-    //   if(socket.connected) {
-
-    //   }
-    // }, 1000);
-    console.log('Compra feita');
-    clearTimeout(sendCartTimeout);
+    setTimeout(() => {
+      if(socket.connected === false) {
+        console.log('Compra feita');
+        clearTimeout(sendCartTimeout);
+      } else {
+        console.log("erro na finalização")
+      }
+    }, 1000);
+    
   })
 
   socket.emit('connected', 'connected');
