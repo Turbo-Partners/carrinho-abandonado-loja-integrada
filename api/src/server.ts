@@ -58,19 +58,19 @@ io.on('connection', (socket) => {
     //   socket.emit('infoSent', 'Envio adiado')
     // })
 
-    socket.on('checkoutComplete', () => {
-      clearTimeout(sendCartTimeout);
-
-      checkoutCompleted = true;
-
-      console.log('Compra feita');
-    })
-
     socket.on('updateAbandonedCartInfo', (data) => {
       dataToSend = data;
       console.log('Dados atualizados');
 
     })
+  })
+
+  socket.on('checkoutComplete', () => {
+    clearTimeout(sendCartTimeout);
+
+    checkoutCompleted = true;
+
+    console.log('Compra feita');
   })
 
   socket.emit('connected', 'connected');
