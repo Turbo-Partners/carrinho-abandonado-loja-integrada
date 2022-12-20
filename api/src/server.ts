@@ -18,13 +18,13 @@ const io = new socketio.Server(httpServer, {
   }
 })
 
-let sendCartTimeout;
-
-let checkoutCompleted = false;
-
-let dataToSend;
-
 io.on('connection', (socket) => {
+  let sendCartTimeout;
+
+  let checkoutCompleted = false;
+
+  let dataToSend;
+
   console.log(`New connection: ${socket.id}`)
 
   socket.on('sendAbandonedCartInfo', (data) => {
