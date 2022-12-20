@@ -48,19 +48,18 @@ io.on('connection', (socket) => {
     oneTimeout = setTimeout(sendCartInfo, 20000)
     console.log('Envio timer iniciado')
 
-    socket.on('setTimeOut', () => {
-      clearTimeout(oneTimeout)
+    // socket.on('setTimeOut', () => {
+    //   clearTimeout(oneTimeout)
 
-      oneTimeout = setTimeout(sendCartInfo, 20000)
-      console.log('Envio adiado')
+    //   oneTimeout = setTimeout(sendCartInfo, 20000)
+    //   console.log('Envio adiado')
 
-      socket.emit('infoSent', 'Envio adiado')
-    })
+    //   socket.emit('infoSent', 'Envio adiado')
+    // })
 
     socket.on('checkoutComplete', () => {
       clearTimeout(oneTimeout)
       console.log('Compra feita')
-
     })
 
     socket.on('updateAbandonedCartInfo', (data) => {
