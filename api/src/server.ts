@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
         }
       })
       .then(function (response) {
-        console.log("enviado", response);
+        console.log("enviado", response.status);
       })
       .catch(function (error) {
         console.log(error);
