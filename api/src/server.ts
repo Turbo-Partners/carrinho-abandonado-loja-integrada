@@ -70,8 +70,6 @@ io.on('connection', (socket) => {
   socket.on('checkoutComplete', () => {
     console.log('Compra feita');
     clearTimeout(sendCartTimeout);
-
-    checkoutCompleted = true;
   })
 
   socket.emit('connected', 'connected');
