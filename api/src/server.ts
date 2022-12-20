@@ -18,17 +18,15 @@ const io = new socketio.Server(httpServer, {
   }
 })
 
-let oneTimeout;
+let sendCartTimeout;
 
 io.on('connection', (socket) => {
   console.log(`New connection: ${socket.id}`)
 
   socket.on('sendAbandonedCartInfo', (data) => {
-    let dataToSend = data
+    let dataToSend = data;
 
     async function sendCartInfo () {
-
-      console.log(dataToSend)
 
       const base64 = btoa(`${process.env.CLIENT_ID}:${process.env.CLIENT_SERVER}`)
       axios.post('https://api.reportana.com/2022-05/abandoned-checkouts', dataToSend, {
@@ -38,15 +36,17 @@ io.on('connection', (socket) => {
         }
       })
       .then(function (response) {
-        socket.emit('infoSent', 'enviado')
+        socket.emit('infoSent', response);
+        console.log("enviado");
       })
       .catch(function (error) {
-        socket.emit('infoSent', error)
+        socket.emit('infoSent', error);
+        console.log(error);
       });
     };
 
-    oneTimeout = setTimeout(sendCartInfo, 20000)
-    console.log('Envio timer iniciado')
+    sendCartTimeout = setTimeout(sendCartInfo, 20000);
+    console.log('Timer de envio iniciado');
 
     // socket.on('setTimeOut', () => {
     //   clearTimeout(oneTimeout)
@@ -58,18 +58,18 @@ io.on('connection', (socket) => {
     // })
 
     socket.on('checkoutComplete', () => {
-      clearTimeout(oneTimeout)
-      console.log('Compra feita')
+      clearTimeout(sendCartTimeout);
+      console.log('Compra feita');
     })
 
     socket.on('updateAbandonedCartInfo', (data) => {
-      dataToSend = data
-      console.log('Dados atualizados')
+      dataToSend = data;
+      console.log('Dados atualizados');
 
     })
   })
 
-  socket.emit('connected', 'connected')
+  socket.emit('connected', 'connected');
 })
 
-httpServer.listen(8080, () => console.log('Server-test is running!'))
+httpServer.listen(8080, () => console.log('Server-test is running!'));
