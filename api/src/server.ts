@@ -19,13 +19,16 @@ const io = new socketio.Server(httpServer, {
 })
 
 let sendCartTimeout;
+
 let checkoutCompleted = false;
+
+let dataToSend;
 
 io.on('connection', (socket) => {
   console.log(`New connection: ${socket.id}`)
 
   socket.on('sendAbandonedCartInfo', (data) => {
-    let dataToSend = data;
+    dataToSend = data;
 
     async function sendCartInfo () {
 
@@ -58,11 +61,12 @@ io.on('connection', (socket) => {
     //   socket.emit('infoSent', 'Envio adiado')
     // })
 
-    socket.on('updateAbandonedCartInfo', (data) => {
-      dataToSend = data;
-      console.log('Dados atualizados');
+  })
 
-    })
+  socket.on('updateAbandonedCartInfo', (data) => {
+    dataToSend = data;
+    console.log('Dados atualizados');
+
   })
 
   socket.on('checkoutComplete', () => {
