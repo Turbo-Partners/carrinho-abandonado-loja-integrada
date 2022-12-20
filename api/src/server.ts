@@ -40,17 +40,16 @@ io.on('connection', (socket) => {
         }
       })
       .then(function (response) {
-        socket.emit('infoSent', response);
-        console.log("enviado");
+        console.log("enviado", response);
       })
       .catch(function (error) {
-        socket.emit('infoSent', error);
         console.log(error);
       });
     };
 
     sendCartTimeout = setTimeout(sendCartInfo, 20000);
     console.log('Timer de envio iniciado');
+    console.log()
 
     // socket.on('setTimeOut', () => {
     //   clearTimeout(oneTimeout)
