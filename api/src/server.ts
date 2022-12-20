@@ -75,4 +75,4 @@ io.on('connection', (socket) => {
   socket.emit('connected', 'connected');
 })
 
-httpServer.listen(8080, () => console.log('Server-test is running!'));
+httpServer.listen(8080, () => console.log('Server is running!'));
