@@ -71,8 +71,8 @@ io.on('connection', (socket) => {
     setTimeout(() => {
       console.log(socket.connected)
       if(socket.connected === false) {
-        console.log('Compra feita');
         clearTimeout(sendCartTimeout);
+        console.log('Compra feita');
       } else {
         console.log("erro na finalização")
       }
