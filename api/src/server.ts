@@ -39,16 +39,16 @@ io.on('connection', (socket) => {
           'Content-Type': 'application/json'
         }
       })
-      .then(function (response) {
-        console.log("enviado", response.status);
+      .then(function () {
+        console.log(`${socket.id} - enviado`);
       })
       .catch(function (error) {
-        console.log(error);
+        console.log(`${socket.id} - ${error}`);
       });
     };
 
     sendCartTimeout = setTimeout(sendCartInfo, 900000);
-    console.log('Timer de envio iniciado');
+    console.log(`${socket.id} - Timer de envio iniciado`);
 
     // socket.on('setTimeOut', () => {
     //   clearTimeout(oneTimeout)
@@ -63,7 +63,7 @@ io.on('connection', (socket) => {
 
   socket.on('updateAbandonedCartInfo', (data) => {
     dataToSend = data;
-    console.log('Dados atualizados');
+    console.log(`${socket.id} - Dados atualizados`);
 
   })
 
@@ -72,9 +72,9 @@ io.on('connection', (socket) => {
       console.log(socket.connected)
       if(socket.connected === false) {
         clearTimeout(sendCartTimeout);
-        console.log('Compra feita');
+        console.log(`${socket.id} - Compra feita`);
       } else {
-        console.log("erro na finalização")
+        console.log(`${socket.id} - erro na finalização`)
       }
     }, 1000);
     
