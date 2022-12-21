@@ -38,33 +38,30 @@ io.on('connection', (socket) => {
         }
       })
       .then(function () {
-        console.log(`${socket.id} - enviado`);
+        console.log(`${socket.id} ${dataToSend.reference_id} - enviado`);
       })
       .catch(function (error) {
-        console.log(`${socket.id} - ${error}`);
+        console.log(`${socket.id} ${dataToSend.reference_id} - ${error}`);
       });
     };
 
     sendCartTimeout = setTimeout(sendCartInfo, 900000);
-    console.log(`${socket.id} - Timer de envio iniciado`);
+    console.log(`${socket.id} ${dataToSend.reference_id} - Timer de envio iniciado`);
 
   })
 
   socket.on('updateAbandonedCartInfo', (data) => {
     dataToSend = data;
-    console.log(`${socket.id} - Dados atualizados`);
+    console.log(`${socket.id} ${dataToSend.reference_id} - Dados atualizados`);
 
   })
 
   socket.on('checkoutComplete', () => {
     setTimeout(() => {
-      console.log(socket.connected)
       if(socket.connected === false) {
         clearTimeout(sendCartTimeout);
-        console.log(`${socket.id} - Compra feita`);
-      } else {
-        console.log(`${socket.id} - erro na finalização`)
-      }
+        console.log(`${socket.id} ${dataToSend.reference_id} - Compra feita`);
+      } 
     }, 1000);
     
   })
