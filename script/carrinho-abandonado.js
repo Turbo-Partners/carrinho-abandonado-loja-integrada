@@ -1,29 +1,35 @@
-const userInfo = Array.from(document.querySelectorAll("ul.caixa-info li"));
-const userInfoFormatted = {
-    name: "",
-    email: "",
-    phone: "",
-    //cpf
-    // razaoSocial 
-};
-const userAddressFormatted = {
-    address: "",
-    zip: "",
-    city: "",
-    province: "",
-    provinceCode: "",
-};
-let userCart = [];
 const userId = Date.now();
-let userNameArray = [];
-let totalPrice = 0;
-let subtotalPrice = 0;
 let date = new Date();
 let dateFormatted = `${date.getFullYear()}-${((date.getMonth()+1)<10?'0':'') + (date.getMonth()+1)}-${(date.getDate()<10?'0':'') + date.getDate()} ${date.getHours()}:${(date.getMinutes()<10?'0':'') + date.getMinutes()}`;
 
-function convertProvince(val) {
-	var dateFormatted;
+let socket;
+let completeCart;
+    
+if(!socket) {
+    socket = new io('https://carrinho-abandonado-yic75.ondigitalocean.app/');
+}
 
+socket.on("connected", (arg) => {
+  console.log(arg);
+});
+
+socket.on("infoSent", (arg) => {
+  console.log(arg);
+});
+
+const checkoutButton = document.getElementById("finalizarCompra");
+
+checkoutButton.addEventListener("click",  purchaseComplete);
+
+function purchaseComplete () {
+    const purchaseCompleteError = document.querySelectorAll("div.fancybox-overlay.fancybox-overlay-fixed");
+    
+    if(purchaseCompleteError.length === 0) {
+        socket.emit("checkoutComplete");
+    }
+}
+
+function convertProvince(val) {
 	switch (val.toUpperCase()) {
 		case "AC" :	data = "Acre";					break;
 		case "AL" :	data = "Alagoas";				break;
@@ -57,171 +63,71 @@ function convertProvince(val) {
 	return data;
 }
 
-const cartProducts = document.querySelectorAll("tbody tr");
-
-let socket;
-    
-if(!socket) {
-    socket = new io('https://carrinho-abandonado-yic75.ondigitalocean.app/');
-}
-
-socket.on("connected", (arg) => {
-  console.log(arg);
-});
-
-socket.on("infoSent", (arg) => {
-  console.log(arg);
-});
-
-if(document.getElementById("idEnderecoPrincipal2")) {
-    document.getElementById("idEnderecoPrincipal2").onclick = function() {
-        socket.emit("setTimeOut", "");
-    };
-}
-
-const checkoutButton = document.getElementById("finalizarCompra");
-
-checkoutButton.addEventListener("click", function() {
-    socket.emit("checkoutComplete");
-});
-
-
-function getInfoWhenNewUser() {
-    let inputChanged = false;
-    
-    const userEmailInput = document.querySelector("input#id_email");
-    if(userInfoFormatted.email !== userEmailInput.value) {
-        userInfoFormatted.email = userEmailInput.value;
-        inputChanged = true;
-    }
-    
-    const userNameInput = document.querySelector("input#id_nome");
-    if(userInfoFormatted.name !== userNameInput.value) {
-        userInfoFormatted.name = userNameInput.value;
-        inputChanged = true;
-    }
-    
-    const userPhoneInput = document.querySelector("input#id_telefone_celular");
-    if(userInfoFormatted.phone !== userPhoneInput.value) {
-        userInfoFormatted.phone = `+55${userPhoneInput.value.replace(/\D/g,'')}`;
-        inputChanged = true;
-    }
-    
-    const userZipCodeInput = document.querySelector("input#id_cep");
-    if(userAddressFormatted.zip !== userZipCodeInput.value) {
-        userAddressFormatted.zip = userZipCodeInput.value;
-        inputChanged = true;
-    }
-    
-    if(userZipCodeInput.value === "") {
-        userAddressFormatted.address = "";
-        userAddressFormatted.City = "";
-        userAddressFormatted.province = "";
-        userAddressFormatted.provinceCode = "";
-        
-    } else {
-    
-        const userAddressInput = document.querySelector("input#id_endereco");
-        const userAddressNumberInput = document.querySelector("input#id_numero");
-        if(userAddressFormatted.address !== `${userAddressInput.value}, ${userAddressNumberInput.value}`) {
-            console.log(userAddressFormatted.address, `${userAddressInput.value}, ${userAddressNumberInput.value}`);
-            userAddressFormatted.address = `${userAddressInput.value}, ${userAddressNumberInput.value}`;
-            inputChanged = true;
-        }
-        
-        const userCityInput = document.querySelector("input#id_cidade");
-        if(userAddressFormatted.City !== userCityInput.value) {
-            console.log(userAddressFormatted.City, userCityInput.value);
-            userAddressFormatted.City = userCityInput.value;
-            inputChanged = true;
-        }
-            
-        const userProvinceInput = document.querySelector("select#id_estado");
-        if(userAddressFormatted.province !== userProvinceInput.options[userProvinceInput.selectedIndex].text) {
-            console.log(userAddressFormatted.province, userProvinceInput.options[userProvinceInput.selectedIndex].text);
-            userAddressFormatted.province = userProvinceInput.options[userProvinceInput.selectedIndex].text;
-            inputChanged = true;
-        }
-        
-        const userProvinceCodeInput = document.querySelector("select#id_estado").value;
-        if(userAddressFormatted.provinceCode !== userProvinceCodeInput) {
-            console.log(userAddressFormatted.provinceCode, userProvinceCodeInput);
-            userAddressFormatted.provinceCode = userProvinceCodeInput;
-            inputChanged = true;
-        }
-        
-    }
-    
-    if(inputChanged === true) {
-        if((userInfoFormatted.name !== '') && (userInfoFormatted.email !== '') && (userInfoFormatted.phone !== '')) {
-            getUserInfoObject();
-        } 
-    }
-}
-
-function getUserInfoObject() {
+function getDataToSend() {
     const userInfoObject = {
         reference_id: userId.toString(),
         reason_type: null,
-        admin_url: "https://www.google.com.br/",
+        admin_url: "https://www.lojadabruna.com/",
         number: userId.toString(),
-        customer_name: userInfoFormatted.name,
-        customer_email: userInfoFormatted.email,
-        customer_phone: userInfoFormatted.phone,
+        customer_name: userObject.customer_name,
+        customer_email: userObject.customer_email,
+        customer_phone: userObject.customer_phone,
         billing_address: {
-            name: userInfoFormatted.name,
-            first_name: userNameArray[0],
-            last_name: userNameArray[userNameArray.length - 1],
+            name: userObject.customer_name,
+            first_name: userObject.first_name,
+            last_name: userObject.last_name,
             company: null,
-            phone: userInfoFormatted.phone,
-            address1: userAddressFormatted.address,
-            address2: userAddressFormatted.address,
-            city: userAddressFormatted.city,
-            province: userAddressFormatted.province,
-            province_code: userAddressFormatted.provinceCode,
+            phone: userObject.customer_phone,
+            address1: addressObject.address1,
+            address2: addressObject.address2,
+            city: addressObject.city,
+            province: addressObject.province,
+            province_code: addressObject.province_code,
             country: "Brazil",
             country_code: "BR",
-            zip: userAddressFormatted.zip,
+            zip: addressObject.zip,
         },
         shipping_address: {
-            name: userInfoFormatted.name,
-            first_name: userNameArray[0],
-            last_name: userNameArray[userNameArray.length - 1],
+            name: userObject.customer_name,
+            first_name: userObject.first_name,
+            last_name: userObject.last_name,
             company: null,
-            phone: userInfoFormatted.phone,
-            address1: userAddressFormatted.address,
-            address2: userAddressFormatted.address,
-            city: userAddressFormatted.city,
-            province: userAddressFormatted.province,
-            province_code: userAddressFormatted.provinceCode,
+            phone: userObject.customer_phone,
+            address1: addressObject.address1,
+            address2: addressObject.address2,
+            city: addressObject.city,
+            province: addressObject.province,
+            province_code: addressObject.province_code,
             country: "Brazil",
             country_code: "BR",
-            zip: userAddressFormatted.zip,
+            zip: addressObject.zip,
             latitude: null,
             longitude: null
         },
-        line_items: userCart,
+        line_items: productObject.userCart,
         currency: "BRL",
-        total_price: totalPrice,
-        subtotal_price: subtotalPrice,
-        referring_site: "https://www.google.com/",
-        checkout_url: "https://www.google.com/",
+        total_price: productObject.totalPrice,
+        subtotal_price: productObject.subtotalPrice,
+        referring_site: "https://www.lojadabruna.com/",
+        checkout_url: "https://www.lojadabruna.com/checkout",
         completed_at: dateFormatted,
         original_created_at: dateFormatted
-    };   
-        socket.emit("sendAbandonedCartInfo", userInfoObject);
+    };
+    
+    return userInfoObject;
 }
 
-function setCartProduct(cartProducts) {
-    userCart = [];
-    cartProducts.forEach(product => {
+function getCartData() {
+    productObject.userCart = [];
+    const productArray = Array.from(document.querySelectorAll("tbody tr"));
+    productArray.forEach(product => {
         if(!product.classList.contains('bg-dark')) {
             let listedProduct = {
                 title: "",
                 variant_title: "",
                 quantity: 0,
                 price: 0,
-                path: "https://example.com/products/5678",
+                path: "",
                 image_url: "https://example.com/products/5678/image.jpg", 
                 tracking_number: null
             };
@@ -230,88 +136,192 @@ function setCartProduct(cartProducts) {
             listedProduct.title = productTitle.textContent.split("\n                      ")[1];
             
             let productPrice = product.querySelector('div.preco-produto strong');
-            listedProduct.price = parseFloat(productPrice.textContent.split("\n                        ")[1].split("\n                      ")[0].split(" ")[1]);
+            listedProduct.price = parseFloat(productPrice.innerText.split("R$ ")[1]);
             
             let productSku = Array.from(product.querySelectorAll('div.produto-info ul li'));
-            listedProduct.tracking_number = productSku[0].querySelector("strong").textContent.split("\n                              ")[1].split("\n                            ")[0];
+            //listedProduct.tracking_number = productSku[0].querySelector("strong").textContent.split("\n                              ")[1].split("\n                            ")[0];
+            let productVariantTitle = productSku[1].outerText.split("Tamanho: ")[1];
             
             let productQuantity = product.querySelector("td.conteiner-qtd div");
             listedProduct.quantity = parseInt(productQuantity.textContent);
             
-            userCart.push(listedProduct);
+            let productPath = listedProduct.title.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/ /g, "-");
+            listedProduct.path = `https://www.lojadabruna.com/${productPath}`;
+            
+            productObject.userCart.push(listedProduct);
             
         } else {
             
             if (product.classList.contains('tr-checkout-total')) {
-                totalPrice = parseFloat(product.querySelector('div.total').dataset.total);
-                
+                productObject.totalPrice = parseFloat(product.querySelector('div.total').outerText.replace("R$ ", "").replace(".", "").replace(",",".")).toFixed(2);
             } else if (product.classList.contains('esconder-mobile')){
                 if(!product.classList.contains('desconto-tr')) {
-                    subtotalPrice = parseFloat(product.querySelector('div.subtotal').dataset.float);
-                    
+                    productObject.subtotalPrice = parseFloat(product.querySelector('div.subtotal').dataset.float).toFixed(2);
                 }
             }
         }
     });
 }
 
-setCartProduct(cartProducts);
+let isUpdate = false;
+
+function getInfoWhenNewUser() {
+    let inputChanged = false;
+    
+    const userEmailInput = document.querySelector("input#id_email");
+    if(userObject.customer_email !== userEmailInput.value) {
+        userObject.customer_email = userEmailInput.value;
+        inputChanged = true;
+    }
+    
+    const userNameInput = document.querySelector("input#id_nome");
+    if(userObject.customer_name !== userNameInput.value) {
+        userObject.customer_name = userNameInput.value;
+        userObject.first_name = userObject.customer_name.split(" ")[0];
+        userObject.last_name = userObject.customer_name.split(" ")[userObject.customer_name.split(" ").length - 1];
+        inputChanged = true;
+    }
+    
+    const userPhoneInput = document.querySelector("input#id_telefone_celular");
+    if(userObject.customer_phone !== userPhoneInput.value) {
+        userObject.customer_phone = `+55${userPhoneInput.value.replace(/\D/g,'')}`;
+        inputChanged = true;
+    }
+    
+    const userZipCodeInput = document.querySelector("input#id_cep");
+    if(addressObject.zip !== userZipCodeInput.value) {
+        addressObject.zip = userZipCodeInput.value.replace(/\D/g,'');
+        inputChanged = true;
+    }
+    
+    if(userZipCodeInput.value === "") {
+        addressObject.address1 = "";
+        addressObject.city = "";
+        addressObject.province = "";
+        addressObject.provinceCode = "";
+        
+    } else {
+    
+        const userAddressInput = document.querySelector("input#id_endereco");
+        const userAddressNumberInput = document.querySelector("input#id_numero");
+        if(addressObject.address1 !== `${userAddressInput.value}, ${userAddressNumberInput.value}`) {
+            addressObject.address1 = `${userAddressInput.value}, ${userAddressNumberInput.value}`;
+            addressObject.address2 = `${userAddressInput.value}, ${userAddressNumberInput.value}`;
+            inputChanged = true;
+        }
+        
+        const userCityInput = document.querySelector("input#id_cidade");
+        if(addressObject.city !== userCityInput.value) {
+            addressObject.city = userCityInput.value;
+            inputChanged = true;
+        }
+            
+        const userProvinceInput = document.querySelector("select#id_estado");
+        if(addressObject.province !== userProvinceInput.options[userProvinceInput.selectedIndex].text) {
+            addressObject.province = userProvinceInput.options[userProvinceInput.selectedIndex].text;
+            inputChanged = true;
+        }
+        
+        const userProvinceCodeInput = document.querySelector("select#id_estado").value;
+        if(addressObject.provinceCode !== userProvinceCodeInput) {
+            console.log(addressObject.provinceCode);
+            addressObject.provinceCode = userProvinceCodeInput;
+            inputChanged = true;
+        }
+        
+    }
+    
+    let dataToSend;
+    
+    if(inputChanged === true) {
+        if((userObject.customer_name !== '') && (userObject.customer_email !== '') && (userObject.customer_phone !== '')) {
+            if(isUpdate === false) {
+                dataToSend = getDataToSend();
+                socket.emit("sendAbandonedCartInfo", dataToSend);
+                isUpdate = true;
+            } else {
+                dataToSend = getDataToSend();
+                socket.emit("updateAbandonedCartInfo", dataToSend);
+            }
+        } 
+    }
+}
+
+const userInfo = Array.from(document.querySelectorAll("ul.caixa-info li"));
+
+const userObject = {
+    customer_name: "",
+    customer_email: "",
+    customer_phone: "",
+    first_name: "",
+    last_name: "",
+};
 
 if(userInfo.length !== 0) {
-    const userInfoNotFormatted = [];
-    const userAddressNotFormatted = [];
+    userObject.customer_name = userInfo[0].innerText.split("Nome: ")[1];
+    userObject.customer_email = userInfo[1].innerText.split("Email: ")[1];
+    userObject.customer_phone = `+55${userInfo[2].innerText.split("Celular: ")[1].replace(/\D/g,'')}`;
+    userObject.first_name = userObject.customer_name.split(" ")[0];
+    userObject.last_name = userObject.customer_name.split(" ")[userObject.customer_name.split(" ").length - 1];
+}
+//Get address data
 
-    userInfo.forEach(info => {
-        let myArray = info.textContent.split(": ");
-        userInfoNotFormatted.push(myArray[1]);
-    
+const addressArray = Array.from(document.querySelectorAll("div.endereco.accordion-group"));
+const addressObject = {
+    address1: "",
+    address2: "",
+    city: "",
+    province: "",
+    province_code: "",
+    country: "Brazil",
+    country_code: "BR",
+    zip: "",
+};
+
+function getAddress() {
+    Array.from(document.querySelectorAll("input.endereco-principal")).forEach(function(input) {
+        if(input.checked) {
+            const address = document.querySelector(`div#e${input.id.split("idE")[1]} div.accordion-inner`).textContent.split("<br>")[0].split("\n                      ");
+            addressObject.address1 = address[1].split("        ")[1];
+            addressObject.address2 = address[1].split("        ")[1];
+            addressObject.city = address[3].split("        ")[1].split(", ")[1].split(" / ")[0];
+            addressObject.province = convertProvince(address[3].split("        ")[1].split(", ")[1].split(" / ")[1]);
+            addressObject.province_code = address[3].split("        ")[1].split(", ")[1].split(" / ")[1];
+            addressObject.zip = address[4].split("        ")[1];
+        }
     });
+}
+
+//Get cart data
+const productObject = {
+    totalPrice: 0,
+    subtotalPrice: 0,
+    userCart: [],
+};
+
+let updateAbandonedCart = false;
+
+const shippingShippingMethods = document.querySelector("div#formas-envio-wrapper");
+shippingShippingMethods.addEventListener("click", function() {
+    if(updateAbandonedCart === true) {
+        setTimeout(function() {
+            getAddress();
+            getCartData();
+            let dataToSend = getDataToSend();
+            console.log(dataToSend);
+            
+            socket.emit("updateAbandonedCartInfo", dataToSend);
+        }, 2000);
+    }
+});
+
+if(userInfo.length !== 0) {
+    getAddress();
+    getCartData();
+    let dataToSend = getDataToSend();
     
-    userInfoFormatted.name = userInfoNotFormatted[0].split("\n")[0];
-    userInfoFormatted.email = userInfoNotFormatted[1].split("\n")[0];
-    userInfoFormatted.phone = userInfoNotFormatted[2].split("\n")[0];
-    
-    userNameArray = userInfoFormatted.name.split(" ");
-    
-    // let address;
-        
-    // for(let i = 3; i === 0; i--) {
-    //     if(document.getElementById(`enderecoPrincipal${i}`)) {
-    //         console.log(document.getElementById(`enderecoPrincipal${i}`));
-    //         document.getElementById(`enderecoPrincipal${i}`).getElementsByClassName("accordion-inner")[0];
-    //     }
-    // }
-    
-    // document.getElementById("enderecoPrincipal1") ? address = document.getElementById("enderecoPrincipal1").getElementsByClassName("accordion-inner")[0] : address = document.getElementById("enderecoPrincipal2").getElementsByClassName("accordion-inner")[0];
-    
-    // console.log(address.textContent.split("<br>"));
-    
-    const address = document.getElementById("enderecoPrincipal2").getElementsByClassName("accordion-inner")[0];
-    
-    const myAddress = address.textContent.split("<br>");
-    userAddressNotFormatted.push(myAddress[0]);
-    
-    let myAddressSplited = userAddressNotFormatted[0].split("\n                              ");
-    myAddressSplited = myAddressSplited.filter(function (i) {
-        return i;
-    });
-    
-    userAddressFormatted.address =  myAddressSplited[0];
-    
-    const getProvinceInfo = myAddressSplited[1].split(", ");
-    let getCity = getProvinceInfo[1].split(" / ");
-    userAddressFormatted.city = getCity[0];
-    userAddressFormatted.province = convertProvince(getCity[1]);
-    userAddressFormatted.provinceCode = getCity[1];
-    
-    const getZipCode = myAddressSplited[2].split("\n            ");
-    userAddressFormatted.zip = getZipCode[0];
-    
-    const phoneFormatted = userInfoFormatted.phone.replace(/\D/g,'');
-    userInfoFormatted.phone = `+55${phoneFormatted}`;
-    
-    setCartProduct(cartProducts);
-    getUserInfoObject();
+    socket.emit("sendAbandonedCartInfo", dataToSend);
+    updateAbandonedCart = true;
 
 } else {
     let inputsArray = [];
@@ -324,7 +334,7 @@ if(userInfo.length !== 0) {
     
     inputsArray.forEach(function(elem) {
         elem.addEventListener("focusout", function() {
-            setCartProduct(cartProducts);
+            getCartData();
             getInfoWhenNewUser();
         });
     });
