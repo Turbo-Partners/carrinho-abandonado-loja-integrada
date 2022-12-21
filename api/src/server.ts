@@ -21,8 +21,6 @@ const io = new socketio.Server(httpServer, {
 io.on('connection', (socket) => {
   let sendCartTimeout;
 
-  let checkoutCompleted = false;
-
   let dataToSend;
 
   console.log(`New connection: ${socket.id}`)
@@ -49,15 +47,6 @@ io.on('connection', (socket) => {
 
     sendCartTimeout = setTimeout(sendCartInfo, 900000);
     console.log(`${socket.id} - Timer de envio iniciado`);
-
-    // socket.on('setTimeOut', () => {
-    //   clearTimeout(oneTimeout)
-
-    //   oneTimeout = setTimeout(sendCartInfo, 20000)
-    //   console.log('Envio adiado')
-
-    //   socket.emit('infoSent', 'Envio adiado')
-    // })
 
   })
 
