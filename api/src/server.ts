@@ -47,7 +47,7 @@ io.on('connection', (socket) => {
       });
     };
 
-    sendCartTimeout = setTimeout(sendCartInfo, 600000);
+    sendCartTimeout = setTimeout(sendCartInfo, 900000);
     console.log('Timer de envio iniciado');
 
     // socket.on('setTimeOut', () => {
