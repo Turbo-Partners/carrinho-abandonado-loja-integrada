@@ -5,6 +5,7 @@ import socketio from 'socket.io'
 import http from 'http'
 import https from 'https'
 import cors from 'cors'
+import { IAbandonedCartData } from './interface'
 
 const app = express()
 app.use(express.json())
@@ -28,11 +29,11 @@ app.post("/finalizacao/:id", (req: Request, res: Response) => {
 io.on('connection', (socket) => {
   let sendCartTimeout;
 
-  let dataToSend;
+  let dataToSend: IAbandonedCartData;
 
   console.log(`New connection: ${socket.id}`)
 
-  socket.on('sendAbandonedCartInfo', (data) => {
+  socket.on('sendAbandonedCartInfo', (data: IAbandonedCartData) => {
     dataToSend = data;
 
     async function sendCartInfo () {
