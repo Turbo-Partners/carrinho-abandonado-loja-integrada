@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import axios from 'axios'
-import express from 'express'
+import express, { Request, Response } from 'express'
 import socketio from 'socket.io'
 import http from 'http'
 import https from 'https'
@@ -17,6 +17,13 @@ const io = new socketio.Server(httpServer, {
     methods: ['GET', 'POST']
   }
 })
+
+app.post("/finalizacao/:id", (req: Request, res: Response) => {
+  const { id } = req.params;
+  console.log(id)
+
+  return res.status(201).send();
+});
 
 io.on('connection', (socket) => {
   let sendCartTimeout;
@@ -50,7 +57,7 @@ io.on('connection', (socket) => {
 
   })
 
-  socket.on('updateAbandonedCartInfo', (data) => {
+  socket.on('updateAbandonedCartInfo', (data: IAbandonedCartData) => {
     dataToSend = data;
     console.log(`${socket.id} ${dataToSend.reference_id} - Dados atualizados`);
 
