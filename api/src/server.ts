@@ -57,6 +57,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('checkoutComplete', () => {
+    console.log(socket.connected)
     if(socket.connected === false) {
       console.log("teste de finalização")
       clearTimeout(sendCartTimeout);
