@@ -36,6 +36,10 @@ io.on('connection', (socket) => {
   socket.on('sendAbandonedCartInfo', (data: IAbandonedCartData) => {
     dataToSend = data;
 
+    if(typeof dataToSend.reference_id === "undefined") {
+      dataToSend.reference_id = Date.now().toString();
+    }
+
     async function sendCartInfo () {
 
       const base64 = btoa(`${process.env.CLIENT_ID}:${process.env.CLIENT_SERVER}`)
