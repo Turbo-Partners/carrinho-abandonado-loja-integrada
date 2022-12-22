@@ -88,6 +88,19 @@ var body = {
 
 app.post("/finalizacao/:id", (req: Request, res: Response) => {
   const { id } = req.params;
+
+  // axios.get('https://api.reportana.com/2022-05/orders',{
+  //   headers: {
+  //     Authorization: `Basic ${base64}`,
+  //     'Content-Type': 'application/json'
+  //   }
+  // })
+  // .then(function (response) {
+  //   const data = response;
+  // })
+  // .catch(function (error) {
+  //   console.error(error);
+  // });
   
   const data = body;
 
