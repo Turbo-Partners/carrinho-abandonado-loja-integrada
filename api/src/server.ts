@@ -58,6 +58,7 @@ io.on('connection', (socket) => {
 
   socket.on('checkoutComplete', () => {
     if(socket.connected === false) {
+      console.log("teste de finalização")
       clearTimeout(sendCartTimeout);
       console.log(`${socket.id} ${dataToSend.reference_id} - Compra feita`);
     } 
