@@ -127,7 +127,7 @@ io.on('connection', (socket) => {
 
   console.log(`New connection: ${socket.id}`)
 
-  socket.on('sendAbandonedCartInfo', (data: IAbandonedCartData) => {
+  socket.on('sendAbandonedCartInfo', (data) => {
     dataToSend = data;
 
     if(typeof dataToSend.reference_id === "undefined") {
