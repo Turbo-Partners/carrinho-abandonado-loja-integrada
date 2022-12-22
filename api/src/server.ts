@@ -12,6 +12,7 @@ app.use(express.json())
 app.use(cors())
 
 const httpServer = http.createServer(app)
+const base64 = btoa(`${process.env.CLIENT_ID}:${process.env.CLIENT_SERVER}`)
 const io = new socketio.Server(httpServer, {
   cors: {
     origin: "https://www.lojadabruna.com/",
@@ -21,7 +22,21 @@ const io = new socketio.Server(httpServer, {
 
 app.post("/finalizacao/:id", (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log(id)
+  
+  const data = "test";
+
+  axios.post('https://api.reportana.com/2022-05/orders', data,{
+    headers: {
+      Authorization: `Basic ${base64}`,
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(function (response) {
+    console.log("test");
+  })
+  .catch(function (error) {
+    console.error("error");
+  });
 
   return res.status(201).send();
 });
@@ -42,8 +57,6 @@ io.on('connection', (socket) => {
     }
 
     async function sendCartInfo () {
-
-      const base64 = btoa(`${process.env.CLIENT_ID}:${process.env.CLIENT_SERVER}`)
       axios.post('https://api.reportana.com/2022-05/abandoned-checkouts', dataToSend, {
         headers: {
           Authorization: `Basic ${base64}`,
@@ -60,13 +73,11 @@ io.on('connection', (socket) => {
 
     sendCartTimeout = setTimeout(sendCartInfo, 900000);
     console.log(`${socket.id} ${dataToSend.reference_id} - Timer de envio iniciado`);
-
   })
 
   socket.on('updateAbandonedCartInfo', (data: IAbandonedCartData) => {
     dataToSend = data;
     console.log(`${socket.id} ${dataToSend.reference_id} - Dados atualizados`);
-
   })
 
   socket.on('checkoutComplete', () => {
