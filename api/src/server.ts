@@ -37,6 +37,7 @@ io.on('connection', (socket) => {
     dataToSend = data;
 
     if(typeof dataToSend.reference_id === "undefined") {
+      console.log("Error 'reference_id' undefined");
       dataToSend.reference_id = Date.now().toString();
     }
 
