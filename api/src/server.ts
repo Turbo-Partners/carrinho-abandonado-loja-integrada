@@ -57,12 +57,12 @@ io.on('connection', (socket) => {
   })
 
   socket.on('checkoutComplete', () => {
-    console.log(socket.connected)
-    if(socket.connected === false) {
-      console.log("teste de finalização")
-      clearTimeout(sendCartTimeout);
-      console.log(`${socket.id} ${dataToSend.reference_id} - Compra feita`);
-    } 
+    setTimeout(() => {
+      if(socket.connected === false) {
+        clearTimeout(sendCartTimeout);
+        console.log(`${socket.id} ${dataToSend.reference_id} - Compra feita`);
+      } 
+    }, 3000); 
   })
 
   socket.emit('connected', 'connected');
