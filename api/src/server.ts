@@ -5,7 +5,7 @@ import socketio from 'socket.io'
 import http from 'http'
 import https from 'https'
 import cors from 'cors'
-import { IAbandonedCartData } from './interface'
+import { IAbandonedCartData, IPurchase } from './interface'
 
 const app = express()
 app.use(express.json())
@@ -20,10 +20,77 @@ const io = new socketio.Server(httpServer, {
   }
 })
 
+var body = {
+  reference_id: '123456789',
+  number: '12345678',
+  admin_url: 'https://example.com/admin/orders/123456789',
+  customer_name: 'Igor Teste',
+  customer_email: 'Teste@gmail.com',
+  customer_phone: '+5527997737840',
+  billing_address: {
+      name: 'Igor Teste',
+      first_name: 'Igor',
+      last_name: 'Teste',
+      company: null,
+      phone: '+5527997737840',
+      address1: 'Av Belisário Ramos, 3735',
+      address2: 'Sagrado Coração Jesus',
+      city: 'Lages',
+      province: 'Santa Catarina',
+      province_code: 'SC',
+      country: 'Brazil',
+      country_code: 'BR',
+      zip: '88508100',
+      latitude: null,
+      longitude: null
+  },
+  shipping_address: {
+    name: 'Igor Teste',
+    first_name: 'Igor',
+    last_name: 'Teste',
+    company: null,
+    phone: '+5527997737840',
+    address1: 'Av Belisário Ramos, 3735',
+    address2: 'Sagrado Coração Jesus',
+    city: 'Lages',
+    province: 'Santa Catarina',
+    province_code: 'SC',
+    country: 'Brazil',
+    country_code: 'BR',
+    zip: '88508100',
+    latitude: null,
+    longitude: null
+  },
+  line_items: [
+      {
+          title: 'Óculos',
+          variant_title: 'Preto',
+          quantity: 1,
+          price: 49.9,
+          path: 'https://example.com/products/1234',
+          image_url: 'https://example.com/products/1234/image.jpg', 
+          tracking_number: 'LB123456789BR'
+      }
+  ],
+  currency: 'BRL',
+  total_price: 124.8,
+  subtotal_price: 109.8,
+  payment_status: 'PAID',
+  payment_method: 'PIX',
+  tracking_numbers: 'LB123456789BR,LB987654321BR',
+  referring_site: 'https://www.facebook.com/',
+  status_url: 'https://example.com/orders/123456789',
+  billet_url: 'https://example.com/orders/123456789/boleto.pdf',
+  billet_line: '000000000000000000000000000000000000000000000000',
+  billet_expired_at: '2022-12-22',
+  original_created_at: '2022-12-22 17:50'
+};
+
+
 app.post("/finalizacao/:id", (req: Request, res: Response) => {
   const { id } = req.params;
   
-  const data = "test";
+  const data = body;
 
   axios.post('https://api.reportana.com/2022-05/orders', data,{
     headers: {
