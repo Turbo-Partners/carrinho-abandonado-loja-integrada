@@ -86,7 +86,6 @@ var body = {
   original_created_at: '2022-12-22 17:50'
 };
 
-
 app.post("/finalizacao/:id", (req: Request, res: Response) => {
   const { id } = req.params;
   
@@ -102,7 +101,7 @@ app.post("/finalizacao/:id", (req: Request, res: Response) => {
     console.log("test");
   })
   .catch(function (error) {
-    console.error("error");
+    console.error(error);
   });
 
   return res.status(201).send();
