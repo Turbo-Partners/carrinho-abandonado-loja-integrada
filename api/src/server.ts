@@ -3,121 +3,115 @@ import axios from 'axios'
 import express, { Request, Response } from 'express'
 import socketio from 'socket.io'
 import http from 'http'
-import https from 'https'
 import cors from 'cors'
-import { IAbandonedCartData, IPurchase } from './interface'
+import { IAbandonedCartData, IPurchaseResponse } from './interface'
+import { createObjectToSend, formatDate } from './utils/Utils'
 
-const app = express()
-app.use(express.json())
-app.use(cors())
+const app = express();
+app.use(express.json());
+app.use(cors());
 
-const httpServer = http.createServer(app)
-const base64 = btoa(`${process.env.CLIENT_ID}:${process.env.CLIENT_SERVER}`)
+const httpServer = http.createServer(app);
+const base64 = btoa(`${process.env.CLIENT_ID}:${process.env.CLIENT_SERVER}`);
 const io = new socketio.Server(httpServer, {
   cors: {
     origin: "https://www.lojadabruna.com/",
     methods: ['GET', 'POST']
   }
-})
+});
 
-var body = {
-  reference_id: '123456789',
-  number: '12345678',
-  admin_url: 'https://example.com/admin/orders/123456789',
-  customer_name: 'Igor Teste',
-  customer_email: 'Teste@gmail.com',
-  customer_phone: '+5527997737840',
-  billing_address: {
-      name: 'Igor Teste',
-      first_name: 'Igor',
-      last_name: 'Teste',
-      company: null,
-      phone: '+5527997737840',
-      address1: 'Av Belisário Ramos, 3735',
-      address2: 'Sagrado Coração Jesus',
-      city: 'Lages',
-      province: 'Santa Catarina',
-      province_code: 'SC',
-      country: 'Brazil',
-      country_code: 'BR',
-      zip: '88508100',
-      latitude: null,
-      longitude: null
-  },
-  shipping_address: {
-    name: 'Igor Teste',
-    first_name: 'Igor',
-    last_name: 'Teste',
-    company: null,
-    phone: '+5527997737840',
-    address1: 'Av Belisário Ramos, 3735',
-    address2: 'Sagrado Coração Jesus',
-    city: 'Lages',
-    province: 'Santa Catarina',
-    province_code: 'SC',
-    country: 'Brazil',
-    country_code: 'BR',
-    zip: '88508100',
-    latitude: null,
-    longitude: null
-  },
-  line_items: [
-      {
-          title: 'Óculos',
-          variant_title: 'Preto',
-          quantity: 1,
-          price: 49.9,
-          path: 'https://example.com/products/1234',
-          image_url: 'https://example.com/products/1234/image.jpg', 
-          tracking_number: 'LB123456789BR'
-      }
-  ],
-  currency: 'BRL',
-  total_price: 124.8,
-  subtotal_price: 109.8,
-  payment_status: 'PAID',
-  payment_method: 'PIX',
-  tracking_numbers: 'LB123456789BR,LB987654321BR',
-  referring_site: 'https://www.facebook.com/',
-  status_url: 'https://example.com/orders/123456789',
-  billet_url: 'https://example.com/orders/123456789/boleto.pdf',
-  billet_line: '000000000000000000000000000000000000000000000000',
-  billet_expired_at: '2022-12-22',
-  original_created_at: '2022-12-22 17:50'
-};
+async function getPurchasesList () {
+  const dateFormatted = await formatDate();
 
-app.post("/finalizacao/:id", (req: Request, res: Response) => {
-  const { id } = req.params;
-
-  // axios.get('https://api.reportana.com/2022-05/orders',{
-  //   headers: {
-  //     Authorization: `Basic ${base64}`,
-  //     'Content-Type': 'application/json'
-  //   }
-  // })
-  // .then(function (response) {
-  //   const data = response;
-  // })
-  // .catch(function (error) {
-  //   console.error(error);
-  // });
-  
-  const data = body;
-
-  axios.post('https://api.reportana.com/2022-05/orders', data,{
+  await axios.get(`https://api.awsli.com.br/v1/pedido/search/?limit=20&since_atualizado=${dateFormatted}&chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`,{
     headers: {
-      Authorization: `Basic ${base64}`,
       'Content-Type': 'application/json'
     }
   })
   .then(function (response) {
-    console.log("test");
+    let purchasesListData = response.data;
+
+    purchasesListData.objects.forEach(async (purchase) => {
+      let purchaseData: IPurchaseResponse;
+
+      await axios.get(`https://api.awsli.com.br/v1/pedido/${purchase.numero}?chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`,{
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(function (response) {
+        purchaseData = response.data;
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+
+      if(purchaseData) {
+        const purchaseDataFormatted = await createObjectToSend(purchaseData);
+    
+        await axios.post('https://api.reportana.com/2022-05/orders', purchaseDataFormatted,{
+          headers: {
+            Authorization: `Basic ${base64}`,
+            'Content-Type': 'application/json',
+            "Accept-Encoding": "gzip,deflate,compress"
+          }
+        })
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          if (error.response) {
+            console.log(error.response.data);
+            console.log(error.response.status);
+          }
+        });
+      }
+    })
+  })
+  .catch(function (error) {
+    console.error(error);
+  });
+};
+
+setInterval(getPurchasesList, 1800000);
+
+app.post("/finalizacao/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  let purchaseData: IPurchaseResponse;
+  
+  await axios.get(`https://api.awsli.com.br/v1/pedido/${id}?chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`,{
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(function (response) {
+    purchaseData = response.data;
   })
   .catch(function (error) {
     console.error(error);
   });
 
-  return res.status(201).send();
+  if(purchaseData) {
+    const purchaseDataFormatted = await createObjectToSend(purchaseData);
+
+    await axios.post('https://api.reportana.com/2022-05/orders', purchaseDataFormatted,{
+      headers: {
+        Authorization: `Basic ${base64}`,
+        'Content-Type': 'application/json',
+        "Accept-Encoding": "gzip,deflate,compress"
+      }
+    })
+    .then(function (response) {
+      console.log(response.data);
+      return res.status(201).send();
+    })
+    .catch(function (error) {
+      if (error.response) {
+        console.log(error.response.data);
+        return res.status(error.response.status).send();
+      }
+    });
+  }
 });
 
 io.on('connection', (socket) => {
