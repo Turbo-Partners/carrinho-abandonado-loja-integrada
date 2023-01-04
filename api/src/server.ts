@@ -32,8 +32,11 @@ async function getPurchasesList () {
     let purchasesListData = response.data;
 
     console.log("3")
+    console.log(purchasesListData)
 
     purchasesListData.objects.forEach(async (purchase) => {
+      console.log(purchase)
+
       let purchaseData: IPurchaseResponse;
 
       console.log("4")
