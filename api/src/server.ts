@@ -31,15 +31,12 @@ async function getPurchasesList () {
   .then(function (response) {
     let purchasesListData = response.data;
 
-    console.log("3")
-    console.log(purchasesListData)
-
     purchasesListData.objects.forEach(async (purchase) => {
       console.log(purchase)
 
       let purchaseData: IPurchaseResponse;
 
-      console.log("4")
+      console.log(`https://api.awsli.com.br/v1/pedido/${purchase.numero}?chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`)
 
       await axios.get(`https://api.awsli.com.br/v1/pedido/${purchase.numero}?chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`,{
         headers: {
