@@ -61,7 +61,7 @@ async function getPurchasesList () {
           }
         })
         .then(function (response) {
-          console.log(`Compra feita: ${purchaseDataFormatted.number}`);
+          console.log(`Compra atualizada: ${purchaseDataFormatted.number}`);
         })
         .catch(function (error) {
           if (error.response) {
@@ -106,7 +106,7 @@ app.post("/finalizacao/:id", async (req: Request, res: Response) => {
       }
     })
     .then(function (response) {
-      console.log(response.data);
+      console.log(`Compra concluída: ${purchaseDataFormatted.number}`);
       return res.status(201).send();
     })
     .catch(function (error) {
