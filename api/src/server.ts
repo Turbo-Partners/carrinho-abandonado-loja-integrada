@@ -36,7 +36,7 @@ async function getPurchasesList () {
 
       let purchaseData: IPurchaseResponse;
 
-      console.log(`https://api.awsli.com.br/v1/pedido/${purchase.numero}?chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`)
+      console.log(`${purchase.numero}?chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`)
 
       await axios.get(`https://api.awsli.com.br/v1/pedido/${purchase.numero}?chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`,{
         headers: {
