@@ -36,18 +36,22 @@ async function getPurchasesList () {
     purchasesListData.objects.forEach(async (purchase) => {
       let purchaseData: IPurchaseResponse;
 
+      console.log("4")
+
       await axios.get(`https://api.awsli.com.br/v1/pedido/${purchase.numero}?chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`,{
         headers: {
           'Content-Type': 'application/json'
         }
       })
       .then(function (response) {
-        console.log("4")
+        console.log("5")
         purchaseData = response.data;
       })
       .catch(function (error) {
         console.error(error);
       });
+
+      console.log("6")
 
       if(purchaseData) {
         const purchaseDataFormatted = await createObjectToSend(purchaseData);
