@@ -21,11 +21,7 @@ const io = new socketio.Server(httpServer, {
 });
 
 async function getPurchasesList () {
-  console.log("1")
-
   const dateFormatted = await formatDate();
-
-  console.log("2")
 
   await axios.get(`https://api.awsli.com.br/v1/pedido/search/?limit=20&since_atualizado=${dateFormatted}&chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`,{
     headers: {
@@ -46,6 +42,7 @@ async function getPurchasesList () {
         }
       })
       .then(function (response) {
+        console.log("4")
         purchaseData = response.data;
       })
       .catch(function (error) {
@@ -79,7 +76,7 @@ async function getPurchasesList () {
   });
 };
 
-setInterval(getPurchasesList, 60000);
+setInterval(getPurchasesList, 120000);
 
 app.post("/finalizacao/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
