@@ -23,6 +23,8 @@ const io = new socketio.Server(httpServer, {
 async function getPurchasesList () {
   const dateFormatted = await formatDate();
 
+  console.log(dateFormatted)
+
   await axios.get(`https://api.awsli.com.br/v1/pedido/search/?limit=20&since_atualizado=${dateFormatted}&chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`,{
     headers: {
       'Content-Type': 'application/json'
