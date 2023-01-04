@@ -33,10 +33,16 @@ async function getPurchasesList () {
 
     console.log(`Updated purchases: ${purchasesListData.objects.length}`)
 
+    console.log("1")
+
     purchasesListData.objects.forEach(async (purchase) => {
       console.log(purchase)
 
+      console.log("2")
+
       let purchaseData: IPurchaseResponse;
+
+      console.log("3")
 
       await axios.get(`https://api.awsli.com.br/v1/pedido/${purchase.numero}?chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`,{
         headers: {
@@ -77,7 +83,7 @@ async function getPurchasesList () {
   });
 };
 
-setInterval(getPurchasesList, 1800000);
+setInterval(getPurchasesList, 60000);
 
 app.post("/finalizacao/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
