@@ -160,7 +160,7 @@ io.on('connection', (socket) => {
     setTimeout(() => {
       if(socket.connected === false) {
         clearTimeout(sendCartTimeout);
-        console.log(`${socket.id} ${dataToSend.reference_id} - Compra feita`);
+        console.log(`${socket.id} - Compra feita`);
       } 
     }, 3000); 
   })
