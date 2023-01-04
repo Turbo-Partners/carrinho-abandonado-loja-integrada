@@ -30,6 +30,7 @@ async function getPurchasesList () {
   })
   .then(function (response) {
     let purchasesListData = response.data;
+    console.log(`https://api.awsli.com.br/v1/pedido/search/?limit=20&since_atualizado=${dateFormatted}&chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`)
 
     console.log(`Updated purchases: ${purchasesListData.objects.length}`)
 
