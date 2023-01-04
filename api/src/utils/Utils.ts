@@ -59,9 +59,9 @@ export async function convertPurchasePaymentType(codigo: string) {
   }
 }
 
-export async function formatDate() {
+export async function formatDate(delay: number) {
   const dateNow = dayjs();
-  const dateDelay = dateNow.subtract(30, 'minute').subtract(3, 'hour');
+  const dateDelay = dateNow.subtract(delay, 'minute').subtract(3, 'hour');
   const dateToUtc =  dayjs(dateDelay).utc().local().format();
   const dateFormatted = dayjs(dateToUtc).format('YYYY-MM-DDTHH:mm:ss');
 
