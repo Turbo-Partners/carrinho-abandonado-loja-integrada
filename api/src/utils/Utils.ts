@@ -124,8 +124,8 @@ export async function createObjectToSend(dataToSend: IPurchaseResponse) {
   purchaseDataToSend.status_url = `https://www.lojadabruna.com/conta/pedido/${dataToSend.numero}/listar_reduzido`,
   purchaseDataToSend.billet_url = '',
   purchaseDataToSend.billet_line = '',
-  purchaseDataToSend.billet_expired_at = dataToSend.data_criacao,
-  purchaseDataToSend.original_created_at = dataToSend.data_expiracao
+  purchaseDataToSend.billet_expired_at = dataToSend.data_expiracao,
+  purchaseDataToSend.original_created_at = dataToSend.data_criacao
 
   return purchaseDataToSend
 }
