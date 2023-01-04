@@ -77,7 +77,7 @@ async function getPurchasesList () {
   });
 };
 
-setInterval(getPurchasesList, 60000);
+setInterval(getPurchasesList, 1800000);
 
 app.post("/finalizacao/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
