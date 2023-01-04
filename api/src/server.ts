@@ -31,7 +31,7 @@ async function getPurchasesList () {
   .then(function (response) {
     let purchasesListData = response.data;
 
-    console.log(`Updated purchases: ${purchasesListData.objects}`)
+    console.log(`Updated purchases: ${purchasesListData.objects.length}`)
 
     purchasesListData.objects.forEach(async (purchase) => {
       console.log(purchase)
