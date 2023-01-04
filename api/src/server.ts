@@ -61,7 +61,7 @@ async function getPurchasesList () {
           }
         })
         .then(function (response) {
-          console.log(response.data);
+          console.log(`Compra feita: ${purchaseDataFormatted.number}`);
         })
         .catch(function (error) {
           if (error.response) {
