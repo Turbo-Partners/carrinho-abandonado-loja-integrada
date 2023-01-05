@@ -23,9 +23,10 @@ const io = new socketio.Server(httpServer, {
 async function getPurchasesList () {
   const dateFormatted = await formatDate(30);
 
-  await axios.get(`https://api.awsli.com.br/v1/pedido/search/?limit=20&since_atualizado=${dateFormatted}&chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`,{
+  await axios.get(`https://api.awsli.com.br/v1/pedido/search/?limit=50&since_atualizado=${dateFormatted}&chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`,{
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept-Encoding': 'gzip,deflate,compress'
     }
   })
   .then(function (response) {
@@ -39,7 +40,8 @@ async function getPurchasesList () {
 
       await axios.get(`https://api.awsli.com.br/v1/pedido/${purchase.numero}?chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`,{
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip,deflate,compress'
         }
       })
       .then(function (response) {
@@ -56,7 +58,7 @@ async function getPurchasesList () {
           headers: {
             Authorization: `Basic ${base64}`,
             'Content-Type': 'application/json',
-            "Accept-Encoding": "gzip,deflate,compress"
+            'Accept-Encoding': 'gzip,deflate,compress'
           }
         })
         .then(function (response) {
@@ -84,7 +86,8 @@ app.post("/finalizacao/:id", async (req: Request, res: Response) => {
   
   await axios.get(`https://api.awsli.com.br/v1/pedido/${id}?chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`,{
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept-Encoding': 'gzip,deflate,compress'
     }
   })
   .then(function (response) {
@@ -101,7 +104,7 @@ app.post("/finalizacao/:id", async (req: Request, res: Response) => {
       headers: {
         Authorization: `Basic ${base64}`,
         'Content-Type': 'application/json',
-        "Accept-Encoding": "gzip,deflate,compress"
+        'Accept-Encoding': 'gzip,deflate,compress'
       }
     })
     .then(function (response) {
@@ -136,7 +139,8 @@ io.on('connection', (socket) => {
       axios.post('https://api.reportana.com/2022-05/abandoned-checkouts', dataToSend, {
         headers: {
           Authorization: `Basic ${base64}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip,deflate,compress'
         }
       })
       .then(function () {
