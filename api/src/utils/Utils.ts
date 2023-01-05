@@ -1,10 +1,10 @@
-import { IAddress, ILineItems, IPurchaseResponse } from "../interface";
+import { IAddress, ILineItems, IPurchaseResponse, ISituacao } from "../interface";
 import { Purchase } from "../purchase";
 import dayjs from 'dayjs'
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 
-export async  function convertProvince(rovinceCode: string) {
+export async  function convertProvince(rovinceCode: string): Promise<string> {
   let provinceName: string;
   switch (rovinceCode.toUpperCase()) {
     case "AC" :	provinceName = "Acre";					break;
@@ -39,7 +39,7 @@ export async  function convertProvince(rovinceCode: string) {
   return provinceName;
 }
 
-export async function convertPurchasePaymentStatus(purchaseStatus) {    
+export async function convertPurchasePaymentStatus(purchaseStatus: ISituacao): Promise<string> {    
   if (purchaseStatus.aprovado === true && purchaseStatus.cancelado === false) {
     return 'PAID';
   } else if (purchaseStatus.aprovado === false && purchaseStatus.cancelado === true) {
@@ -52,14 +52,14 @@ export async function convertPurchasePaymentStatus(purchaseStatus) {
 export async function convertPurchasePaymentType(codigo: string) {
   if (codigo === "psredirect") {
     return 'CREDIT_CARD';
-  } else if (codigo === "paghiper") {
+  } else if (codigo === "paghiper" || codigo === "pagali-pix") {
     return 'PIX';
   } else {
     return 'OTHER';
   }
 }
 
-export async function formatDate(delay: number) {
+export async function formatDate(delay: number): Promise<string> {
   const dateNow = dayjs();
   const dateDelay = dateNow.subtract(delay, 'minute').subtract(3, 'hour');
   const dateToUtc =  dayjs(dateDelay).utc().local().format();
@@ -68,7 +68,7 @@ export async function formatDate(delay: number) {
   return dateFormatted;
 }
 
-export async function createObjectToSend(dataToSend: IPurchaseResponse) {
+export async function createObjectToSend(dataToSend: IPurchaseResponse): Promise<Purchase> {
   const purchaseDataToSend = new Purchase();
 
   purchaseDataToSend.reference_id = dataToSend.numero.toString();
@@ -82,7 +82,7 @@ export async function createObjectToSend(dataToSend: IPurchaseResponse) {
     name: dataToSend.cliente.nome,
     first_name: dataToSend.cliente.nome.split(' ')[0],
     last_name: dataToSend.cliente.nome.split(' ')[dataToSend.cliente.nome.split(' ').length - 1],
-    company: null,
+    company: dataToSend.cliente.razao_social,
     phone: `+55${dataToSend.cliente.telefone_celular}`,
     address1: `${dataToSend.endereco_entrega.endereco}, ${dataToSend.endereco_entrega.numero}`,
     address2: `${dataToSend.endereco_entrega.endereco}, ${dataToSend.endereco_entrega.numero}`,
@@ -119,7 +119,7 @@ export async function createObjectToSend(dataToSend: IPurchaseResponse) {
   purchaseDataToSend.subtotal_price = parseFloat(dataToSend.valor_subtotal);
   purchaseDataToSend.payment_status = await convertPurchasePaymentStatus(dataToSend.situacao)
   purchaseDataToSend.payment_method = await convertPurchasePaymentType(dataToSend.pagamentos[0].forma_pagamento.codigo),
-  purchaseDataToSend.tracking_numbers = '',
+  purchaseDataToSend.tracking_numbers = dataToSend.envios[0].objeto
   purchaseDataToSend.referring_site = 'https://www.lojadabruna.com/',
   purchaseDataToSend.status_url = `https://www.lojadabruna.com/conta/pedido/${dataToSend.numero}/listar_reduzido`,
   purchaseDataToSend.billet_url = '',
