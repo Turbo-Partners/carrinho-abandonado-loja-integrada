@@ -181,7 +181,7 @@ export interface IAbandonedCartData {
     name: string,
     first_name: string,
     last_name: string,
-    company: null,
+    company?: string,
     phone: string,
     address1: string,
     address2: string,
@@ -194,3 +194,15 @@ export interface IAbandonedCartData {
     latitude: null,
     longitude: null
   }
+
+export interface ISituacao {
+  aprovado: boolean,
+  cancelado: boolean,
+  codigo: string,
+  final: boolean,
+  id: number,
+  nome: string,
+  notificar_comprador: boolean,
+  padrao: boolean,
+  resource_uri: string
+}
