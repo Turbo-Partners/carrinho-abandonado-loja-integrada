@@ -102,7 +102,7 @@ app.post("/finalizacao/:id", async (req: Request, res: Response) => {
 
     await axios.post('https://api.reportana.com/2022-05/orders', purchaseDataFormatted,{
       headers: {
-        Authorization: `Basic ${base64}`,
+        'Authorization': `Basic ${base64}`,
         'Content-Type': 'application/json',
         'Accept-Encoding': 'gzip,deflate,compress'
       }
@@ -138,7 +138,7 @@ io.on('connection', (socket) => {
     async function sendCartInfo () {
       axios.post('https://api.reportana.com/2022-05/abandoned-checkouts', dataToSend, {
         headers: {
-          Authorization: `Basic ${base64}`,
+          'Authorization': `Basic ${base64}`,
           'Content-Type': 'application/json',
           'Accept-Encoding': 'gzip,deflate,compress'
         }
@@ -147,7 +147,9 @@ io.on('connection', (socket) => {
         console.log(`${socket.id} ${dataToSend.reference_id} - enviado`);
       })
       .catch(function (error) {
-        console.log(`${socket.id} ${dataToSend.reference_id} - ${error}`);
+        if (error.response) {
+          console.log(`${socket.id} ${dataToSend.reference_id} - ${error.response.data}`);
+        }
       });
     };
 
