@@ -104,7 +104,7 @@ export async function createObjectToSend(dataToSend: IPurchaseResponse): Promise
       title: item.nome,
       variant_title: item.nome,
       quantity: parseInt(item.quantidade),
-      price: parseFloat(item.preco_cheio),
+      price: parseFloat(item.preco_venda),
       path: item.produto,
       image_url: "", 
       tracking_number: ""
