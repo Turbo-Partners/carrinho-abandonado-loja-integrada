@@ -119,7 +119,7 @@ export async function createObjectToSend(dataToSend: IPurchaseResponse): Promise
   purchaseDataToSend.subtotal_price = parseFloat(dataToSend.valor_subtotal);
   purchaseDataToSend.payment_status = await convertPurchasePaymentStatus(dataToSend.situacao)
   purchaseDataToSend.payment_method = await convertPurchasePaymentType(dataToSend.pagamentos[0].forma_pagamento.codigo),
-  purchaseDataToSend.tracking_numbers = dataToSend.envios[0].objeto
+  purchaseDataToSend.tracking_numbers = ''
   purchaseDataToSend.referring_site = 'https://www.lojadabruna.com/',
   purchaseDataToSend.status_url = `https://www.lojadabruna.com/conta/pedido/${dataToSend.numero}/listar_reduzido`,
   purchaseDataToSend.billet_url = '',
