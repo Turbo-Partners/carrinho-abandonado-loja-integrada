@@ -206,4 +206,3 @@ export interface ISituacao {
   padrao: boolean,
   resource_uri: string
 }
-
