@@ -8,7 +8,7 @@
 - [API](#API)
   - [Rotas da API](#Rotas-da-API)
   - [Configurações](#Configurações)
-  - [Variável de ambiente](#Variável-de-ambiente)
+  - [Variáveis de ambiente](#Variáveis-de-ambiente)
 
 
 ## Introdução ##
@@ -138,14 +138,14 @@ A API está encarregada de transitar os dados entre as plataformas. Através do 
   - Dentro da função ``getPurchasesList`` podemos encontrar uma função ``formatDate(minutos)`` que podemos passar por ela um **number** como parâmetro representando o tempo em minutos que estará sendo feita a busca por novas compras na Loja integrada. Um ``formatDate(5)`` esta buscando qualquer nova compra feita nos últimos 5 minutos.
   - Dentro do evento socket **sendAbandonedCartInfo** tem uma variável chamada de **sendCartTimeout** dentro dela tem um **setTimeout(sendCartInfo, milissegundo)** onde o segundo parâmetro será o tempo em milissegundos para que os dados coletados pelo script sejam enviados para a Rerportana.
   
-### Variável de ambiente ###
+### Variáveis de ambiente ###
 
-  #### Chaves de API da **Reportana** ####
+  ** Chaves de API da Reportana **
   
     - CLIENT_ID
     - CLIENT_SERVER
 
-  #### Chaves de API da **Loja integrada** ####
+  ** Chaves de API da Loja integrada **
   
     - CHAVE_API
     - CHAVE_APLICACAO
