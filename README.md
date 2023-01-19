@@ -8,6 +8,7 @@
 - [API](#API)
   - [Rotas da API](#Rotas-da-API)
   - [Configurações](#Configurações)
+  - [Variável de ambiente](#Variável-de-ambiente)
 
 
 ## Introdução ##
