@@ -140,12 +140,12 @@ A API está encarregada de transitar os dados entre as plataformas. Através do 
   
 ### Variáveis de ambiente ###
 
-  ** Chaves de API da Reportana **
+  **Chaves de API da Reportana**
   
     - CLIENT_ID
     - CLIENT_SERVER
 
-  ** Chaves de API da Loja integrada **
+  **Chaves de API da Loja integrada**
   
     - CHAVE_API
     - CHAVE_APLICACAO
