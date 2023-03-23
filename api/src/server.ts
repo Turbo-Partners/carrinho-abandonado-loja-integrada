@@ -21,8 +21,9 @@ const io = new socketio.Server(httpServer, {
 });
 
 let compras = 0;
-
-let carrinhos = 0; 
+let carrinhosIniciados = 0;
+let carrinhosAtualizados = 0;
+let carrinhosEnviados = 0; 
 
 async function getPurchasesList () {
   const dateFormatted = await formatDate(5);
@@ -41,7 +42,7 @@ async function getPurchasesList () {
     purchasesListData.objects.forEach(async (purchase) => {
       compras ++
 
-      console.log("compras", compras);
+      console.log("compras = ", compras);
 
       /*
       let purchaseData: IPurchaseResponse;
@@ -144,6 +145,9 @@ io.on('connection', (socket) => {
 
   console.log(`New connection: ${socket.id}`)
 
+  carrinhosIniciados ++
+  console.log('Carrinhos iniciados = ', carrinhosIniciados)
+
   socket.on('sendAbandonedCartInfo', (data) => {
     dataToSend = data;
 
@@ -153,9 +157,9 @@ io.on('connection', (socket) => {
     }
 
     async function sendCartInfo () {
-      carrinhos ++
 
-      console.log("carrinhos", carrinhos);
+      carrinhosEnviados ++
+      console.log("Carrinhos enviados = ", carrinhosEnviados);
 
      /* axios.post('https://api.reportana.com/2022-05/abandoned-checkouts', dataToSend, {
         headers: {
@@ -181,6 +185,10 @@ io.on('connection', (socket) => {
   socket.on('updateAbandonedCartInfo', (data: IAbandonedCartData) => {
     dataToSend = data;
     console.log(`${socket.id} ${dataToSend.reference_id} - Dados atualizados`);
+
+    carrinhosAtualizados ++
+    console.log("Carrinhos atualizados = ", carrinhosAtualizados);
+
   })
 
   socket.on('checkoutComplete', () => {
