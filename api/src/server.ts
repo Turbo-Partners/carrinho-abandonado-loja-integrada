@@ -159,9 +159,6 @@ io.on('connection', (socket) => {
 
   console.log(`New connection: ${socket.id}`)
 
-  carrinhosIniciados ++
-  console.log('Carrinhos iniciados = ', carrinhosIniciados)
-
   socket.on('sendAbandonedCartInfo', (data) => {
     dataToSend = data;
 
@@ -194,6 +191,9 @@ io.on('connection', (socket) => {
 
     sendCartTimeout = setTimeout(sendCartInfo, 900000);
     console.log(`${socket.id} ${dataToSend.reference_id} - Timer de envio iniciado`);
+
+    carrinhosIniciados ++
+    console.log('Carrinhos iniciados = ', carrinhosIniciados)
   })
 
   socket.on('updateAbandonedCartInfo', (data: IAbandonedCartData) => {
@@ -206,6 +206,9 @@ io.on('connection', (socket) => {
   })
 
   socket.on('checkoutComplete', () => {
+    compras ++
+    console.log("compras = ", compras);
+    
     setTimeout(() => {
       if(socket.connected === false) {
         clearTimeout(sendCartTimeout);
