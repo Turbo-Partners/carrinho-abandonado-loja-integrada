@@ -162,7 +162,7 @@ io.on('connection', (socket) => {
   console.log(`New connection: ${socket.id}`)
 
   clienteConectado ++
-  console.log(clienteConectado);
+  console.log("Cliente conectado", clienteConectado);
 
   socket.on('sendAbandonedCartInfo', (data) => {
     dataToSend = data;
