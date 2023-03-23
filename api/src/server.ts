@@ -23,6 +23,7 @@ const io = new socketio.Server(httpServer, {
 
 let compras = 0;
 let comprasAlteradas = 0;
+let clienteConectado = 0;
 let carrinhosIniciados = 0;
 let carrinhosAtualizados = 0;
 let carrinhosEnviados = 0; 
@@ -96,6 +97,7 @@ function showData() {
   console.log("Atualização")
   console.log("compras = ", compras);
   console.log("Compras alteradas = ", comprasAlteradas);
+  console.log("Cliente conectado = ", clienteConectado);
   console.log("Carrinhos iniciados = ", carrinhosIniciados);
   console.log("Carrinhos atualizados = ", carrinhosAtualizados);
   console.log("Carrinhos enviados = ", carrinhosEnviados);
@@ -159,6 +161,9 @@ io.on('connection', (socket) => {
 
   console.log(`New connection: ${socket.id}`)
 
+  clienteConectado ++
+  console.log(clienteConectado);
+
   socket.on('sendAbandonedCartInfo', (data) => {
     dataToSend = data;
 
@@ -208,7 +213,7 @@ io.on('connection', (socket) => {
   socket.on('checkoutComplete', () => {
     compras ++
     console.log("compras = ", compras);
-    
+
     setTimeout(() => {
       if(socket.connected === false) {
         clearTimeout(sendCartTimeout);
