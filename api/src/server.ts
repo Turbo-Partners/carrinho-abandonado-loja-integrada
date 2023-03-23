@@ -21,6 +21,7 @@ const io = new socketio.Server(httpServer, {
 });
 
 let compras = 0;
+let comprasAlteradas = 0;
 let carrinhosIniciados = 0;
 let carrinhosAtualizados = 0;
 let carrinhosEnviados = 0; 
@@ -40,9 +41,9 @@ async function getPurchasesList () {
     console.log(`Updated purchases: ${purchasesListData.objects.length}`)
 
     purchasesListData.objects.forEach(async (purchase) => {
-      compras ++
+      comprasAlteradas ++
 
-      console.log("compras = ", compras);
+      console.log("Compras alteradas = ", comprasAlteradas);
 
       /*
       let purchaseData: IPurchaseResponse;
