@@ -90,6 +90,16 @@ async function getPurchasesList () {
   });
 };
 
+function showData() {
+  console.log("compras = ", compras);
+  console.log("Compras alteradas = ", comprasAlteradas);
+
+  console.log("Carrinhos iniciados = ", carrinhosIniciados);
+  console.log("Carrinhos atualizados = ", carrinhosAtualizados);
+  console.log("Carrinhos enviados = ", carrinhosEnviados);
+}
+
+setInterval(showData, 600000);
 setInterval(getPurchasesList, 300000);
 
 app.post("/finalizacao/:id", async (req: Request, res: Response) => {
