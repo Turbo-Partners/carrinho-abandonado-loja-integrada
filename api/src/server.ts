@@ -20,6 +20,10 @@ const io = new socketio.Server(httpServer, {
   }
 });
 
+let compras = 0;
+
+let carrinhos = 0; 
+
 async function getPurchasesList () {
   const dateFormatted = await formatDate(5);
 
@@ -35,7 +39,11 @@ async function getPurchasesList () {
     console.log(`Updated purchases: ${purchasesListData.objects.length}`)
 
     purchasesListData.objects.forEach(async (purchase) => {
+      compras ++
 
+      console.log("compras", compras);
+
+      /*
       let purchaseData: IPurchaseResponse;
 
       await axios.get(`https://api.awsli.com.br/v1/pedido/${purchase.numero}?chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`,{
@@ -70,7 +78,9 @@ async function getPurchasesList () {
             console.log(error.response.status);
           }
         });
-      }
+      }*/
+
+
     })
   })
   .catch(function (error) {
@@ -82,7 +92,14 @@ setInterval(getPurchasesList, 300000);
 
 app.post("/finalizacao/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
-  let purchaseData: IPurchaseResponse;
+
+  compras ++
+
+  console.log("compras = ", compras);
+
+  return res.status(200).send();
+
+  /*let purchaseData: IPurchaseResponse;
   
   await axios.get(`https://api.awsli.com.br/v1/pedido/${id}?chave_api=${process.env.CHAVE_API}&chave_aplicacao=${process.env.CHAVE_APLICACAO}`,{
     headers: {
@@ -117,7 +134,7 @@ app.post("/finalizacao/:id", async (req: Request, res: Response) => {
         return res.status(error.response.status).send();
       }
     });
-  }
+  }*/
 });
 
 io.on('connection', (socket) => {
@@ -136,7 +153,11 @@ io.on('connection', (socket) => {
     }
 
     async function sendCartInfo () {
-      axios.post('https://api.reportana.com/2022-05/abandoned-checkouts', dataToSend, {
+      carrinhos ++
+
+      console.log("carrinhos", carrinhos);
+
+     /* axios.post('https://api.reportana.com/2022-05/abandoned-checkouts', dataToSend, {
         headers: {
           'Authorization': `Basic ${base64}`,
           'Content-Type': 'application/json',
@@ -150,7 +171,7 @@ io.on('connection', (socket) => {
         if (error.response) {
           console.log(`${socket.id} ${dataToSend.reference_id} - ${error.response.data}`);
         }
-      });
+      });*/
     };
 
     sendCartTimeout = setTimeout(sendCartInfo, 900000);
