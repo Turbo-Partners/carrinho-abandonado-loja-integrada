@@ -6,6 +6,7 @@ import http from 'http'
 import cors from 'cors'
 import { IAbandonedCartData, IPurchaseResponse } from './interface'
 import { createObjectToSend, formatDate } from './utils/Utils'
+import console from 'console'
 
 const app = express();
 app.use(express.json());
@@ -91,12 +92,14 @@ async function getPurchasesList () {
 };
 
 function showData() {
+  console.log("///////////////////") 
+  console.log("Atualização")
   console.log("compras = ", compras);
   console.log("Compras alteradas = ", comprasAlteradas);
-
   console.log("Carrinhos iniciados = ", carrinhosIniciados);
   console.log("Carrinhos atualizados = ", carrinhosAtualizados);
   console.log("Carrinhos enviados = ", carrinhosEnviados);
+  console.log("///////////////////")
 }
 
 setInterval(showData, 600000);
